@@ -8,11 +8,11 @@ import "Solidity-RLP/RLPReader.sol";
 import "./structs/BlockData.sol";
 import "./structs/ProverDto.sol";
 import "./interfaces/ITrustedOracle.sol";
-import "./interfaces/IReceiptInclusionProver.sol";
+import "./interfaces/ITransactionInclusionProver.sol";
 import "./lib/RLPEncoder.sol";
 import "./lib/DynamicBufferLib.sol";
 
-contract ReceiptInclusionProver is IReceiptInclusionProver {
+contract TransactionInclusionProver is ITransactionInclusionProver {
     using RLPReader for bytes;
     using RLPReader for uint256;
     using RLPReader for RLPReader.RLPItem;
@@ -26,7 +26,7 @@ contract ReceiptInclusionProver is IReceiptInclusionProver {
         _oracle = ITrustedOracle(oracleAddress);
     }
 
-    function proveReceiptInclusion(ProverDto memory data) external view returns (bool) {
+    function proveTransactionInclusion(ProverDto memory data) external view returns (bool) {
         if (!data.txReceipt.status) return false;
 
         if (_oracle.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
@@ -44,7 +44,7 @@ contract ReceiptInclusionProver is IReceiptInclusionProver {
         return keccak256(rlpItem.toRlpBytes());
     }
 
-    function _getBlockHash(BlockData memory blockData) internal view returns (bytes32) {
+    function _getBlockHash(BlockData memory blockData) internal pure returns (bytes32) {
         DynamicBufferLib.DynamicBuffer memory buffer;
 
         bytes memory rootHashes = (
@@ -81,9 +81,6 @@ contract ReceiptInclusionProver is IReceiptInclusionProver {
         buffer.append((abi.encode(blockData.baseFeePerGas, blockData.withdrawalsRoot)).encodeCallData(0));
 
         bytes memory rlp = RLPWriter.writeList(buffer.data);
-        console.log("BLOCKHASH: ");
-        console.log("0x3f0fc945187c3d7d31a45d2bbebeded546aaa880ab58c2afa85b74682ea3ed88");
-        console.logBytes32(keccak256(rlp));
 
         return keccak256(rlp);
     }

@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./interfaces/IReceiptInclusionProver.sol";
+import "./interfaces/ITransactionInclusionProver.sol";
 import "./structs/ProverDto.sol";
 
 contract DummyRefunder {
-    IReceiptInclusionProver private _prover;
+    ITransactionInclusionProver private _prover;
 
     constructor(address proverAddress) {
-        _prover = IReceiptInclusionProver(proverAddress);
+        _prover = ITransactionInclusionProver(proverAddress);
     }
 
     function claim(ProverDto calldata data) external view returns (bool) {
-        return _prover.proveReceiptInclusion(data);
+        return _prover.proveTransactionInclusion(data);
     }
 }
