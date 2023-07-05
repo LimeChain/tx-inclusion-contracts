@@ -1,6 +1,6 @@
 [![MIT License][license-shield]][license-url]
 
-## Instalation
+## Installation
 
 ```
 forge install
