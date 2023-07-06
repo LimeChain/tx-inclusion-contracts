@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {RLPWriter} from "./RLPWriter.sol";
-import {DynamicBufferLib} from "./DynamicBufferLib.sol";
+import "solady/src/utils/DynamicBufferLib.sol";
 
 /**
  * @title RLPEncoder

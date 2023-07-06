@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
 import "Solidity-RLP/RLPReader.sol";
+import "solady/src/utils/DynamicBufferLib.sol";
 
 import "./structs/BlockData.sol";
 import "./structs/ProverDto.sol";
@@ -10,7 +11,6 @@ import "./interfaces/ITrustedOracle.sol";
 import "./interfaces/ITransactionInclusionProver.sol";
 import "./lib/RLPEncoder.sol";
 import "./lib/Utils.sol";
-import "./lib/DynamicBufferLib.sol";
 
 /**
  * @title TransactionInclusionProver
