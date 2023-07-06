@@ -13,6 +13,10 @@ import "./lib/RLPEncoder.sol";
 import "./lib/Utils.sol";
 import "./lib/DynamicBufferLib.sol";
 
+/**
+ * @title TransactionInclusionProver
+ * @dev A contract that verifies whether a transaction is included in a block.
+ */
 contract TransactionInclusionProver is ITransactionInclusionProver {
     using RLPReader for bytes;
     using RLPReader for uint256;
