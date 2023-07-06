@@ -23,10 +23,19 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
 
     ITrustedOracle private _oracle;
 
+    /**
+     * @dev Initializes the contract with the address of the trusted oracle.
+     * @param oracleAddress The address of the trusted oracle.
+     */
     constructor(address oracleAddress) {
         _oracle = ITrustedOracle(oracleAddress);
     }
 
+    /**
+     * @dev Verifies that a transaction is included in a block.
+     * @param data The data needed to verify the transaction inclusion.
+     * @return A boolean indicating whether the transaction is included in the block.
+     */
     function proveTransactionInclusion(ProverDto memory data) external view returns (bool) {
         if (!data.txReceipt.status) return false;
 
@@ -44,6 +53,11 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         return true;
     }
 
+    /**
+     * @dev Computes the hash of a transaction receipt.
+     * @param data The transaction receipt data.
+     * @return The hash of the transaction receipt.
+     */
     function _getReceiptHash(Receipt memory data) internal pure returns (bytes32) {
         bytes memory receiptHashBytes = abi.encode(data.status, data.cumulativeGasUsed, data.bitvector, data.logs);
 
@@ -51,6 +65,11 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         return keccak256(rlpItem.toRlpBytes());
     }
 
+    /**
+     * @dev Computes the hash of a block.
+     * @param blockData The block data.
+     * @return The hash of the block.
+     */
     function _getBlockHash(BlockData memory blockData) internal pure returns (bytes32) {
         DynamicBufferLib.DynamicBuffer memory buffer;
 
