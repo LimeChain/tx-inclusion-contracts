@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import "openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
-import "forge-std/console.sol";
 import "Solidity-RLP/RLPReader.sol";
 
 import "./structs/BlockData.sol";
