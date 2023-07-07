@@ -6,6 +6,6 @@ import "./Log.sol";
 struct Receipt {
     bool status;
     uint256 cumulativeGasUsed;
-    bytes bitvector;
+    bytes logsBloom;
     Log[] logs;
 }

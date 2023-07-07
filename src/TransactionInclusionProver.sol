@@ -10,7 +10,6 @@ import "./structs/ProverDto.sol";
 import "./interfaces/ITrustedOracle.sol";
 import "./interfaces/ITransactionInclusionProver.sol";
 import "./lib/RLPEncoder.sol";
-import "./lib/Utils.sol";
 
 /**
  * @title TransactionInclusionProver
@@ -45,11 +44,7 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         if (_oracle.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
 
         bytes32 txReceiptHash = _getReceiptHash(data.txReceipt);
-        if (
-            MerkleProof.verify(
-                data.receiptProofBranch, Utils.bytesToBytes32(data.blockData.receiptsRoot, 0), txReceiptHash
-            )
-        ) {
+        if (MerkleProof.verify(data.receiptProofBranch, data.blockData.receiptsRoot, txReceiptHash)) {
             return false;
         }
 
@@ -62,7 +57,7 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
      * @return The hash of the transaction receipt.
      */
     function _getReceiptHash(Receipt memory data) internal pure returns (bytes32) {
-        bytes memory receiptHashBytes = abi.encode(data.status, data.cumulativeGasUsed, data.bitvector, data.logs);
+        bytes memory receiptHashBytes = abi.encode(data.status, data.cumulativeGasUsed, data.logsBloom, data.logs);
 
         RLPReader.RLPItem memory rlpItem = receiptHashBytes.toRlpItem();
         return keccak256(rlpItem.toRlpBytes());
@@ -76,13 +71,13 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     function _getBlockHash(BlockData memory blockData) internal pure returns (bytes32) {
         DynamicBufferLib.DynamicBuffer memory buffer;
 
-        buffer.append(blockData.parentHash.encodeBytes());
-        buffer.append(blockData.sha3Uncles.encodeBytes());
-        buffer.append(blockData.miner.encodeBytes());
-        buffer.append(blockData.stateRoot.encodeBytes());
-        buffer.append(blockData.transactionsRoot.encodeBytes());
-        buffer.append(blockData.receiptsRoot.encodeBytes());
-        buffer.append(blockData.logsBloom.encodeBytes());
+        buffer.append(abi.encodePacked(blockData.parentHash).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.sha3Uncles).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.miner).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.stateRoot).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.transactionsRoot).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.receiptsRoot).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.logsBloom).encodeBytes());
 
         bytes memory integers = (
             abi.encode(
@@ -91,13 +86,13 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         ).encodeCallData(0);
         buffer.append(integers);
 
-        buffer.append(blockData.extraData.encodeBytes());
-        buffer.append(blockData.mixHash.encodeBytes());
-        buffer.append(blockData.nonce.encodeBytes());
+        buffer.append(abi.encodePacked(blockData.extraData).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.mixHash).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.nonce).encodeBytes());
 
-        buffer.append((abi.encode(blockData.baseFeePerGas)).encodeCallData(0));
+        buffer.append((abi.encodePacked(blockData.baseFeePerGas)).encodeCallData(0));
 
-        buffer.append(blockData.withdrawalsRoot.encodeBytes());
+        buffer.append(abi.encodePacked(blockData.withdrawalsRoot).encodeBytes());
 
         bytes memory rlp = RLPWriter.writeList(buffer.data);
 

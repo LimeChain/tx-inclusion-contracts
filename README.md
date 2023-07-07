@@ -29,8 +29,10 @@ source .env && forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL 
 If you want to generate typings for JS usage install typechain globally:
 
 ```
-npm install -g typechain
+npm install -g typechain @typechain/ethers-v5
 ```
+
+\*the example is for ethers v5, change the version if you're using a different one
 
 And run the command for generating the types:
 
