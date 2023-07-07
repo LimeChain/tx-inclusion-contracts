@@ -38,17 +38,14 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
      * @param data The data needed to verify the transaction inclusion.
      * @return A boolean indicating whether the transaction is included in the block.
      */
-    function proveTransactionInclusion(ProverDto memory data) external view returns (bool) {
+    function proveTransactionInclusion(ProverDto calldata data) external view returns (bool) {
         if (!data.txReceipt.status) return false;
 
         if (_blockhashStorage.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
 
         bytes32 txReceiptHash = _getReceiptHash(data.txReceipt);
-        if (MerkleProof.verify(data.receiptProofBranch, data.blockData.receiptsRoot, txReceiptHash)) {
-            return false;
-        }
 
-        return true;
+        return MerkleProof.verify(data.receiptProofBranch, data.blockData.receiptsRoot, txReceiptHash);
     }
 
     /**
@@ -77,7 +74,7 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         buffer.append(abi.encodePacked(blockData.stateRoot).encodeBytes());
         buffer.append(abi.encodePacked(blockData.transactionsRoot).encodeBytes());
         buffer.append(abi.encodePacked(blockData.receiptsRoot).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.logsBloom).encodeBytes());
+        buffer.append(blockData.logsBloom.encodeBytes());
 
         bytes memory integers = (
             abi.encode(
@@ -86,9 +83,9 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         ).encodeCallData(0);
         buffer.append(integers);
 
-        buffer.append(abi.encodePacked(blockData.extraData).encodeBytes());
+        buffer.append(blockData.extraData.encodeBytes());
         buffer.append(abi.encodePacked(blockData.mixHash).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.nonce).encodeBytes());
+        buffer.append(blockData.nonce.encodeBytes());
 
         buffer.append((abi.encodePacked(blockData.baseFeePerGas)).encodeCallData(0));
 

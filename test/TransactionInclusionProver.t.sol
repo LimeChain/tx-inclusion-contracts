@@ -29,7 +29,7 @@ contract TransactionInclusionProverTest is BaseTest {
         BlockData memory blockData = BlockData({
             parentHash: hex"3286eb1ffad639ae2824fac18439d1ebbe9943902665c924013e0b4620a6f98d",
             sha3Uncles: hex"1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
-            miner: hex"690b9a9e9aa1c9db991c7721a92d351db4fac990",
+            miner: 0x690B9A9E9aa1C9dB991C7721a92d351Db4FaC990,
             stateRoot: hex"a9f813e38625a51b7bd7b8c3290d6632de6f20083992ff10884d6c2956c8deb2",
             transactionsRoot: hex"bb590db959162c9fb6e8f7f88b38490e929cd3b00759629e49365746ec997b24",
             receiptsRoot: hex"75a55868341896b7911644b2d1f7de9b2babc2c0cc816847a205ab12937be9bf",
@@ -78,7 +78,7 @@ contract TransactionInclusionProverTest is BaseTest {
         BlockData memory blockData = BlockData({
             parentHash: 0x305ba59e43d9805fe41f1517cf17e5267b64b36aca0507327a987d0081325c59,
             sha3Uncles: 0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347,
-            miner: hex"388c818ca8b9251b393131c08a736a67ccb19297",
+            miner: 0x388C818CA8B9251b393131C08a736A67ccB19297,
             stateRoot: 0x20df3a1649c181e62de637e9d68aafdfdabd81ddc04d85fee90ed68f9868dfd9,
             transactionsRoot: 0x77a44d58b3717e1c85db71b825f8dbacca242cae2c75c4be1c8565a19b5f1c72,
             receiptsRoot: 0x4383a3e9f188afb16fbbf8419bd90bd3bd1797b93da3b03d4d316ce87a3e1843,
@@ -127,7 +127,7 @@ contract TransactionInclusionProverTest is BaseTest {
         BlockData memory blockData = BlockData({
             parentHash: 0x1f2274b771312ed973f587848c0e06d43445f92e93acdb52b3ac1b6b008c96a4,
             sha3Uncles: 0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347,
-            miner: hex"690b9a9e9aa1c9db991c7721a92d351db4fac990",
+            miner: 0x690B9A9E9aa1C9dB991C7721a92d351Db4FaC990,
             stateRoot: 0x0aebc93cd08f5cdbcba648bee33cf61e03b60bc3f424fabd6c0a4221d6426c8d,
             transactionsRoot: 0x90194abd8e79573c61b7a43f48b8e21183b18bd18b054b6d08c19ebd56dc84fa,
             receiptsRoot: 0x109d5c51f422cbbfaf1efe27466ecf9137cdc65be8325d99f4bdfa8123565282,

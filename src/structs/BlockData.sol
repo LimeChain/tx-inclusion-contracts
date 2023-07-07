@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 struct BlockData {
     bytes32 parentHash;
     bytes32 sha3Uncles;
-    bytes miner;
+    address miner;
     bytes32 stateRoot;
     bytes32 transactionsRoot;
     bytes32 receiptsRoot;
