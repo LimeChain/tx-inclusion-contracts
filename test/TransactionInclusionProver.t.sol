@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./BaseTest.t.sol";
+import "../src/interfaces/IBlockhashStorage.sol";
 import "../src/TrustedOracle.sol";
 import "../src/TransactionInclusionProver.sol";
 
@@ -11,17 +12,19 @@ import {Receipt as ReceiptStruct} from "../src/structs/Receipt.sol";
 import "../src/structs/Log.sol";
 
 contract TransactionInclusionProverTest is BaseTest {
-    TrustedOracle public oracle;
+    IBlockhashStorage public blockhashStorage;
     TransactionInclusionProver public prover;
 
     function setUp() public override {
         super.setUp();
-        oracle = new TrustedOracle();
-        prover = new TransactionInclusionProver(address(oracle));
+        blockhashStorage = new TrustedOracle();
+        prover = new TransactionInclusionProver(address(blockhashStorage));
     }
 
     function testProveTransactionInclusion1() public {
-        oracle.setBlockHash(uint256(0x10d1026), 0x6b79c79696905e45fb822940f45556631339d57f9c6e644f3cd78cfbc2985735);
+        blockhashStorage.setBlockHash(
+            uint256(0x10d1026), 0x6b79c79696905e45fb822940f45556631339d57f9c6e644f3cd78cfbc2985735
+        );
 
         BlockData memory blockData = BlockData({
             parentHash: hex"3286eb1ffad639ae2824fac18439d1ebbe9943902665c924013e0b4620a6f98d",
@@ -68,7 +71,9 @@ contract TransactionInclusionProverTest is BaseTest {
     }
 
     function testProveTransactionInclusion2() public {
-        oracle.setBlockHash(uint256(0x10d1026), 0x3286eb1ffad639ae2824fac18439d1ebbe9943902665c924013e0b4620a6f98d);
+        blockhashStorage.setBlockHash(
+            uint256(0x10d1026), 0x3286eb1ffad639ae2824fac18439d1ebbe9943902665c924013e0b4620a6f98d
+        );
 
         BlockData memory blockData = BlockData({
             parentHash: 0x305ba59e43d9805fe41f1517cf17e5267b64b36aca0507327a987d0081325c59,
@@ -115,7 +120,9 @@ contract TransactionInclusionProverTest is BaseTest {
     }
 
     function testProveTransactionInclusionWithStateRootZeroBeginning() public {
-        oracle.setBlockHash(uint256(0x10d1026), 0x3e4a7402b80b7fd315d51399ce95fb84f9d65246901b3506e8fcc0abcc38401d);
+        blockhashStorage.setBlockHash(
+            uint256(0x10d1026), 0x3e4a7402b80b7fd315d51399ce95fb84f9d65246901b3506e8fcc0abcc38401d
+        );
 
         BlockData memory blockData = BlockData({
             parentHash: 0x1f2274b771312ed973f587848c0e06d43445f92e93acdb52b3ac1b6b008c96a4,

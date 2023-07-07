@@ -2,13 +2,13 @@
 pragma solidity ^0.8.20;
 
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
-import "./interfaces/ITrustedOracle.sol";
+import "./interfaces/IBlockhashStorage.sol";
 
 /// @title TrustedOracle contract
 /// @notice The contract provides a trusted oracle example for block hashes data crosscheck
 /// @dev The conctract is owned by an address that can set block hashes
 /// @author LimeChain
-contract TrustedOracle is ITrustedOracle, Ownable {
+contract TrustedOracle is IBlockhashStorage, Ownable {
     mapping(uint256 blockNumber => bytes32 blockHash) private _blockHashes;
 
     /// @notice Sets the block hash for a given block number

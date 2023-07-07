@@ -7,13 +7,13 @@ import "solady/src/utils/DynamicBufferLib.sol";
 
 import "./structs/BlockData.sol";
 import "./structs/ProverDto.sol";
-import "./interfaces/ITrustedOracle.sol";
+import "./interfaces/IBlockhashStorage.sol";
 import "./interfaces/ITransactionInclusionProver.sol";
 import "./lib/RLPEncoder.sol";
 
 /**
  * @title TransactionInclusionProver
- * @dev A contract that verifies whether a transaction is included in a block.
+ * @dev A contract which uses MerkleProof in order to verify whether a transaction is included in a block.
  */
 contract TransactionInclusionProver is ITransactionInclusionProver {
     using RLPReader for bytes;
@@ -23,14 +23,14 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     using RLPEncoder for bytes;
     using DynamicBufferLib for DynamicBufferLib.DynamicBuffer;
 
-    ITrustedOracle private _oracle;
+    IBlockhashStorage private _blockhashStorage;
 
     /**
-     * @dev Initializes the contract with the address of the trusted oracle.
-     * @param oracleAddress The address of the trusted oracle.
+     * @dev Initializes the contract with the address of the trusted blockhashStorage.
+     * @param blockhashStorageAddress The address of the trusted blockhashStorage.
      */
-    constructor(address oracleAddress) {
-        _oracle = ITrustedOracle(oracleAddress);
+    constructor(address blockhashStorageAddress) {
+        _blockhashStorage = IBlockhashStorage(blockhashStorageAddress);
     }
 
     /**
@@ -41,7 +41,7 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     function proveTransactionInclusion(ProverDto memory data) external view returns (bool) {
         if (!data.txReceipt.status) return false;
 
-        if (_oracle.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
+        if (_blockhashStorage.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
 
         bytes32 txReceiptHash = _getReceiptHash(data.txReceipt);
         if (MerkleProof.verify(data.receiptProofBranch, data.blockData.receiptsRoot, txReceiptHash)) {

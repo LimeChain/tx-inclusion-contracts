@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
 import {TrustedOracle} from "../src/TrustedOracle.sol";
+import {IBlockhashStorage} from "../src/interfaces/IBlockhashStorage.sol";
 import {TransactionInclusionProver} from "../src/TransactionInclusionProver.sol";
 
 contract DeployScript is Script {
@@ -12,9 +13,9 @@ contract DeployScript is Script {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PK");
         vm.startBroadcast(deployerPrivateKey);
 
-        TrustedOracle oracle = new TrustedOracle();
+        IBlockhashStorage blockhashStorage = new TrustedOracle();
         TransactionInclusionProver prover = new TransactionInclusionProver(
-            address(oracle)
+            address(blockhashStorage)
         );
 
         vm.stopBroadcast();
