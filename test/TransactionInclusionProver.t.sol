@@ -4,9 +4,8 @@ pragma solidity ^0.8.20;
 import "./BaseTest.t.sol";
 
 // libs
-import "solady/src/utils/DynamicBufferLib.sol";
 import "../src/lib/RLPWriter.sol";
-import "../src/lib/RLPEncode.sol";
+import "../src/lib/RLPEncoder.sol";
 import "../src/lib/RLPReader.sol";
 import "../src/lib/Utils.sol";
 

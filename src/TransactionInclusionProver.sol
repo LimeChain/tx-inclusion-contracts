@@ -68,13 +68,13 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     function _getBlockHash(BlockData memory blockData) internal pure returns (bytes32) {
         DynamicBufferLib.DynamicBuffer memory buffer;
 
-        buffer.append(abi.encodePacked(blockData.parentHash).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.sha3Uncles).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.miner).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.stateRoot).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.transactionsRoot).encodeBytes());
-        buffer.append(abi.encodePacked(blockData.receiptsRoot).encodeBytes());
-        buffer.append(blockData.logsBloom.encodeBytes());
+        buffer.append(abi.encodePacked(blockData.parentHash).encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.sha3Uncles).encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.miner).encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.stateRoot).encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.transactionsRoot).encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.receiptsRoot).encodeBytesBuffer());
+        buffer.append(blockData.logsBloom.encodeBytesBuffer());
 
         bytes memory integers = (
             abi.encode(
@@ -83,13 +83,13 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
         ).encodeCallData(0);
         buffer.append(integers);
 
-        buffer.append(blockData.extraData.encodeBytes());
-        buffer.append(abi.encodePacked(blockData.mixHash).encodeBytes());
-        buffer.append(blockData.nonce.encodeBytes());
+        buffer.append(blockData.extraData.encodeBytesBuffer());
+        buffer.append(abi.encodePacked(blockData.mixHash).encodeBytesBuffer());
+        buffer.append(blockData.nonce.encodeBytesBuffer());
 
         buffer.append((abi.encodePacked(blockData.baseFeePerGas)).encodeCallData(0));
 
-        buffer.append(abi.encodePacked(blockData.withdrawalsRoot).encodeBytes());
+        buffer.append(abi.encodePacked(blockData.withdrawalsRoot).encodeBytesBuffer());
 
         bytes memory rlp = RLPWriter.writeList(buffer.data);
 

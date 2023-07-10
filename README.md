@@ -6,6 +6,12 @@
 forge install
 ```
 
+## Run tests
+
+```
+forge test
+```
+
 ## Start local node
 
 ```
