@@ -1,25 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
-import "Solidity-RLP/RLPReader.sol";
 import "solady/src/utils/DynamicBufferLib.sol";
+import "./lib/RLPEncoder.sol";
+import "./lib/Utils.sol";
+import "./lib/RLPWriter.sol";
 
 import "./structs/BlockData.sol";
 import "./structs/ProverDto.sol";
 import "./interfaces/IBlockhashStorage.sol";
 import "./interfaces/ITransactionInclusionProver.sol";
-import "./lib/RLPEncoder.sol";
 
 /**
  * @title TransactionInclusionProver
  * @dev A contract which uses MerkleProof in order to verify whether a transaction is included in a block.
  */
 contract TransactionInclusionProver is ITransactionInclusionProver {
-    using RLPReader for bytes;
-    using RLPReader for uint256;
-    using RLPReader for RLPReader.RLPItem;
-    using RLPReader for RLPReader.Iterator;
     using RLPEncoder for bytes;
     using DynamicBufferLib for DynamicBufferLib.DynamicBuffer;
 
@@ -39,25 +35,29 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
      * @return A boolean indicating whether the transaction is included in the block.
      */
     function proveTransactionInclusion(ProverDto calldata data) external view returns (bool) {
-        if (!data.txReceipt.status) return false;
+        if (data.txReceipt.postStateOrStatus != 1) return false;
 
         if (_blockhashStorage.getBlockHash(data.blockNumber) != _getBlockHash(data.blockData)) return false;
 
-        bytes32 txReceiptHash = _getReceiptHash(data.txReceipt);
+        bytes memory encodedReceipt = _getEncodedReceipt(data.txReceipt);
 
-        return MerkleProof.verify(data.receiptProofBranch, data.blockData.receiptsRoot, txReceiptHash);
+        return Utils.verifyTrieProof(
+            data.blockData.receiptsRoot, data.txReceipt.keyIndex, data.receiptProofBranch, encodedReceipt
+        );
     }
 
     /**
-     * @dev Computes the hash of a transaction receipt.
-     * @param data The transaction receipt data.
-     * @return The hash of the transaction receipt.
+     * @dev Computes the hash of a transaction TxReceipt.
+     * @param txReceipt The transaction TxReceipt data.
+     * @return The hash of the transaction TxReceipt.
      */
-    function _getReceiptHash(Receipt memory data) internal pure returns (bytes32) {
-        bytes memory receiptHashBytes = abi.encode(data.status, data.cumulativeGasUsed, data.logsBloom, data.logs);
-
-        RLPReader.RLPItem memory rlpItem = receiptHashBytes.toRlpItem();
-        return keccak256(rlpItem.toRlpBytes());
+    function _getEncodedReceipt(TxReceipt memory txReceipt) internal pure returns (bytes memory) {
+        bytes memory bytesReceipt = Utils.encodeReceipt(txReceipt);
+        bytes memory expectedValue = bytesReceipt;
+        if (txReceipt.receiptType > 0) {
+            expectedValue = abi.encodePacked(bytes1(uint8(txReceipt.receiptType)), bytesReceipt);
+        }
+        return expectedValue;
     }
 
     /**
