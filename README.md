@@ -6,8 +6,10 @@
 forge install
 ```
 
+## Run tests
+
 ```
-npm install
+forge test
 ```
 
 ## Start local node
@@ -25,13 +27,23 @@ Create an .env file in the main dir and fill the variables as shown in .env.exam
 In another terminal execute:
 
 ```
-npm run deploy-contracts
+source .env && forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast
 ```
 
 ## Generate typechain types for usage in TypeScript
 
+If you want to generate typings for JS usage install typechain globally:
+
 ```
-npm run generate-types
+npm install -g typechain @typechain/ethers-v5
+```
+
+\*the example is for ethers v5, change the version if you're using a different one
+
+And run the command for generating the types:
+
+```
+typechain --target ethers-v5 --out-dir ./typechain './out/**/*.json'
 ```
 
 [license-url]: https://github.com/LimeChain/tx-inclusion-contracts/blob/main/LICENSE.txt

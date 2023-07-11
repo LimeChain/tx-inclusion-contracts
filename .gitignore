@@ -3,6 +3,7 @@ cache/
 out/
 node_modules/
 typechain/
+broadcast/
 
 # Ignores development broadcast logs
 !/broadcast
