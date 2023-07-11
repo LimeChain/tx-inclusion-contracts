@@ -25,6 +25,5 @@ contract TrustedOracleTest is BaseTest {
         vm.startPrank(user1);
         vm.expectRevert("Ownable: caller is not the owner");
         oracle.setBlockHash(1, "0x1234");
-        vm.stopPrank();
     }
 }

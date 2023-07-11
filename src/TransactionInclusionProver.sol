@@ -14,6 +14,7 @@ import "./interfaces/ITransactionInclusionProver.sol";
 /**
  * @title TransactionInclusionProver
  * @dev A contract which uses MerkleProof in order to verify whether a transaction is included in a block.
+ * @author LimeChain
  */
 contract TransactionInclusionProver is ITransactionInclusionProver {
     using RLPEncoder for bytes;
@@ -22,16 +23,16 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     IBlockhashStorage private _blockhashStorage;
 
     /**
-     * @dev Initializes the contract with the address of the trusted blockhashStorage.
-     * @param blockhashStorageAddress The address of the trusted blockhashStorage.
+     * @dev Initializes the contract with the address of a blockhashStorage.
+     * @param blockhashStorageAddress The address of the blockhashStorage.
      */
     constructor(address blockhashStorageAddress) {
         _blockhashStorage = IBlockhashStorage(blockhashStorageAddress);
     }
 
     /**
-     * @dev Verifies that a transaction is included in a block.
-     * @param data The data needed to verify the transaction inclusion.
+     * @dev Verifies that a transaction is included in a block with success status.
+     * @param data The prover data needed to verify the transaction inclusion.
      * @return A boolean indicating whether the transaction is included in the block.
      */
     function proveTransactionInclusion(ProverDto calldata data) external view returns (bool) {
@@ -47,9 +48,9 @@ contract TransactionInclusionProver is ITransactionInclusionProver {
     }
 
     /**
-     * @dev Computes the hash of a transaction TxReceipt.
-     * @param txReceipt The transaction TxReceipt data.
-     * @return The hash of the transaction TxReceipt.
+     * @dev RLP encodes a TxReceipt.
+     * @param txReceipt The TxReceipt data.
+     * @return The hash of the TxReceipt.
      */
     function _getEncodedReceipt(TxReceipt memory txReceipt) internal pure returns (bytes memory) {
         bytes memory bytesReceipt = Utils.encodeReceipt(txReceipt);
